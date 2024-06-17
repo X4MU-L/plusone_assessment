@@ -16,9 +16,11 @@ import { ValidationError } from "joi";
 
 // handle update user put request for the user route
 async function handleUpdateUserRoute(
-  req: Request<{}, {}, editUserSchema>,
+  req: Request<{ id: string }, {}, editUserSchema>,
   res: Response
 ) {
+  const userId = req.params.id;
+
   try {
     try {
       await updateSchema.validateAsync(req.body);
@@ -26,7 +28,7 @@ async function handleUpdateUserRoute(
       throw new ServerError((error as ValidationError).message, 400);
     }
     // update a user information
-    const updatetedUser = await updateUser(req.body.userId, req.body);
+    const updatetedUser = await updateUser(userId, req.body);
     res.status(200).send({
       success: true,
       message: "blog post updated successfully",
@@ -54,19 +56,18 @@ async function handleUpdateUserRoute(
 
 // handle delete user delete request for the user route
 async function handleDeleteUserRoute(
-  req: Request<{}, {}, deleteUserSchema>,
+  req: Request<{ id: string }, {}, {}>,
   res: Response
 ) {
+  const userId = req.params.id;
   try {
-    try {
-      await deleteSchema.validateAsync(req.body);
-    } catch (error: unknown) {
-      throw new ServerError((error as ValidationError).message, 400);
-    }
+    // try {
+    //   await deleteSchema.validateAsync(req.body);
+    // } catch (error: unknown) {
+    //   throw new ServerError((error as ValidationError).message, 400);
+    // }
     // delete a blog post
-    const deletedUser = await deleteUser(
-      req.body.userId ?? req.body.userId ?? req.body.email
-    );
+    const deletedUser = await deleteUser(userId);
 
     res.status(200).send({
       success: true,

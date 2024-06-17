@@ -1,4 +1,5 @@
 export {
+  handleFetchAllPostRoute,
   handleBlogPostGetRoute,
   handleBlogPostCreateRoute,
   handleBlogPostDeleteRoute,

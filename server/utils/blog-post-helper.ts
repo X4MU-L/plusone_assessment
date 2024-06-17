@@ -3,6 +3,22 @@ import { Post, PostArgegateDataType, PostType } from "../models";
 import { blogPostSchema, blogPostUpdateSchema } from "../types";
 import { ServerError } from "./errors";
 
+async function getSinglePost(postId: string) {
+  try {
+    const post = await Post.findOne({ _id: postId });
+    if (!post) {
+      throw new ServerError("Post not found", 404);
+    }
+
+    return post;
+  } catch (error) {
+    if (error instanceof MongooseError) {
+      throw new ServerError(error.message, 404);
+    }
+    throw error;
+  }
+}
+
 const fetchPaginatedPosts = async (
   page: number,
   limit: number
@@ -72,4 +88,10 @@ async function deletePost(postId: string): Promise<PostType> {
   return post;
 }
 
-export { fetchPaginatedPosts, createNewPost, updatePost, deletePost };
+export {
+  fetchPaginatedPosts,
+  createNewPost,
+  updatePost,
+  deletePost,
+  getSinglePost,
+};

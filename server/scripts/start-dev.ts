@@ -6,7 +6,6 @@ async function generateTypesAndStartServer() {
   const result = await convertFromDirectory({
     schemaDirectory: "schema",
     typeOutputDirectory: "types",
-    debug: true,
   });
 
   if (result) {
