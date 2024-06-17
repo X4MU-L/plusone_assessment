@@ -21,7 +21,7 @@ const signUpUserSchema = Joi.object({
 const editUserSchema = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
-  userId: Joi.string().required(),
+  username: Joi.string(),
 });
 
 const deleteUserSchema = Joi.object()

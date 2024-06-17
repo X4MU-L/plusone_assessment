@@ -6,5 +6,5 @@ export {
   handleBlogPostPutRoute,
 } from "./blog-post";
 
-export { handleDeleteUserRoute, handleUpdateUserRoute } from "./user";
+export { handleDeleteUserRoute, handleUpdateUserRoute } from "./users";
 export { handleSignUpUserRoute, handleSignInRoute } from "./auth";
