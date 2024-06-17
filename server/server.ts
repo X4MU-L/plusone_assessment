@@ -1,14 +1,20 @@
 import dotenv from "dotenv";
 import express from "express";
 import blogPostRoute from "./routes/v1/blog-post";
+import usersRoute from "./routes/v1/users";
+import authRoute from "./routes/v1/auth";
 import mongoConnect from "./mongo";
 import cors, { CorsOptions } from "cors";
+
+// load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5009;
 
-mongoConnect();
+(async function () {
+  await mongoConnect();
+})();
 
 const allowedOrigins = ["http://localhost:3001"];
 
@@ -30,6 +36,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use("/api/v1/blog-post", blogPostRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/user", usersRoute);
 
 app.listen(+PORT, () => {
   console.log(`Server is running on port ${PORT}`);
