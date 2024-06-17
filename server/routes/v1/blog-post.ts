@@ -4,14 +4,14 @@ const router = express.Router();
 
 import {
   handleBlogPostGetRoute,
-  handleBlogPostFetchRoute,
+  handleBlogPostCreateRoute,
   handleBlogPostDeleteRoute,
   handleBlogPostPutRoute,
 } from "../../controllers/v1";
 
 router
   .get("/", handleBlogPostGetRoute)
-  .post("/", handleBlogPostFetchRoute)
+  .post("/", handleBlogPostCreateRoute)
   .put("/", handleBlogPostPutRoute)
   .delete("/", handleBlogPostDeleteRoute);
 

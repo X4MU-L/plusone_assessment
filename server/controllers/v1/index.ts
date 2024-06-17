@@ -1,6 +1,6 @@
 export {
   handleBlogPostGetRoute,
-  handleBlogPostFetchRoute,
+  handleBlogPostCreateRoute,
   handleBlogPostDeleteRoute,
   handleBlogPostPutRoute,
 } from "./blog-post";
