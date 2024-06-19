@@ -5,6 +5,7 @@ export const mongoConnect = async (): Promise<void> => {
   if (!DB_URL) {
     process.exit(1);
   }
+  console.log("DB_URL", DB_URL);
   try {
     mongoose.set("strictQuery", false);
     const conn = await mongoose.connect(DB_URL);
