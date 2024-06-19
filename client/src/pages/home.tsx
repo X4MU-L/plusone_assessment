@@ -1,5 +1,5 @@
 // components
-import { Navbar, Footer, Hero, Posts, Articles, Layout } from "../components";
+import { Navbar, Footer, Hero, Posts, Layout } from "../components";
 
 export default function Campaign() {
   return (
@@ -7,7 +7,6 @@ export default function Campaign() {
       <Navbar />
       <Hero />
       <Posts />
-      <Articles />
       <Footer />
     </Layout>
   );

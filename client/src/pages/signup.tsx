@@ -1,4 +1,3 @@
-import { Input } from "../components";
 import { Link } from "react-router-dom";
 
 import AnimationWrapper from "./utils";
@@ -22,57 +21,6 @@ function signup() {
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Create an account
                 </h1>
-                {/* <form className="space-y-4 md:space-y-6" action="#">
-                  <Input
-                    flex
-                    type="text"
-                    name="firstName"
-                    id="firstName"
-                    placeholder="first name"
-                    label="First Name"
-                  />
-                  <Input
-                    flex
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                    placeholder="last name"
-                    label="Last Name"
-                  />
-                  <Input
-                    flex
-                    type="text"
-                    name="username"
-                    id="username"
-                    placeholder="username"
-                    label="Username"
-                  />
-                  <Input
-                    flex
-                    type="text"
-                    name="email"
-                    id="email"
-                    placeholder="name@company.com"
-                    label="Email"
-                  />
-                  <Input
-                    flex
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="••••••••"
-                    label="Password"
-                  />
-                  <Input
-                    flex
-                    type="password"
-                    name="confirm-password"
-                    id="confirm-password"
-                    placeholder="••••••••"
-                    label="Confirm Password"
-                  /> 
-                 
-                </form> */}
                 <SignUpForm />
               </div>
             </div>

@@ -20,21 +20,7 @@ function loginPage() {
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
                 </h1>
-                <div className="space-y-4 md:space-y-6" action="#">
-                  {/* <Input
-                    type="text"
-                    name="email"
-                    id="email"
-                    label="Email Address"
-                    placeholder="name@company.com"
-                  />
-                  <Input
-                    type="password"
-                    name="password"
-                    id="password"
-                    label="Password"
-                    placeholder="********"
-                  /> */}
+                <div className="space-y-4 md:space-y-6">
                   <SignInForm />
                   <div className="flex items-center justify-between">
                     <CheckBox id="rememberme" label="Remeber me" />

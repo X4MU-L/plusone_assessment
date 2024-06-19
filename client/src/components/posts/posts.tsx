@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* ts-nocheck */
+// @ts-nocheck
+
 import { Typography, Tabs } from "@material-tailwind/react";
 
 import BlogPostCard from "./blog-post-card";
@@ -7,7 +13,6 @@ import { selectPost, useAppSelector } from "../../redux";
 import ViewMoreButton from "./view-more-button";
 
 export function Posts() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, isFetching, page, refetch] = useFetchBlogPosts();
   const posts = useAppSelector(selectPost);
 

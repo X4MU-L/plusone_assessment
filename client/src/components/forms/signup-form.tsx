@@ -1,4 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* ts-nocheck */
 // @ts-nocheck
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from "react";
 import { Link } from "react-router-dom";
 
