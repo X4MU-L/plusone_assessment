@@ -1,4 +1,5 @@
-// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React from "react";
 
@@ -48,7 +49,8 @@ export default function LoginForm() {
       isDisabledFormFirstForm={false}
       isDisabled={false}
       disableAutoComplete
-      type="signup"
+      typeForm="signup"
+      otherDetails={null}
     />
   );
 }

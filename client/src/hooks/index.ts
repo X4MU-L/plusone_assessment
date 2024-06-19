@@ -287,7 +287,8 @@ export const useHandleverify = (): [
   return [loading, confirmed, error, handleUpatetext];
 };
 
-export const useSignUpuser = (): [boolean, (data: unknown) => void] => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useSignUpuser = (): [boolean, (data: unknown) => Promise<any>] => {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (data: unknown) => {

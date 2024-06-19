@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
 
 import {
@@ -51,7 +52,7 @@ export function useGetState<K extends GetStateProps>(
 export const requestOptionsWithoutAuth = (
   url: string,
   cancelToken: CancelToken | null = null,
-  data: unknown = null
+  data: any = null
 ) => ({
   method: "GET",
   url,
@@ -68,7 +69,7 @@ export const requestPostOptionsWithAuth = (
   url: string,
 
   cancelToken: CancelToken | null = null,
-  data: unknown = null
+  data: any = null
 ) => ({
   method: method,
   url,
@@ -84,7 +85,7 @@ export const requestOptionsWithAuth = (
   url: string,
   token: string,
   cancelToken: CancelToken | null = null,
-  data: unknown = null
+  data: any = null
 ) => ({
   method: method,
   url,

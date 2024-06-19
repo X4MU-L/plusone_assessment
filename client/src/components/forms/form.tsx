@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* ts-nocheck */
 // @ts-nocheck
 
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { useFormik } from "formik";
 import { loginValidationSchema, registerValidationSchema } from "../../schema";
 import { TextField } from "../../components/input";
@@ -72,7 +76,7 @@ type FormPropsObjectType<K extends keyof AllowedMapValuesType> = {
   signup: {
     initialValues: AllowedMapValuesType[K];
     handleSubmit: (values: any, resetForm: any) => void;
-    initialFieldValues: FieldPropsTypes<K>[];
+    initialFieldValues: any[];
     validationSchema: typeof registerValidationSchema;
     isDisabledFormFirstForm: boolean;
     isDisabled: boolean;
@@ -83,7 +87,7 @@ type FormPropsObjectType<K extends keyof AllowedMapValuesType> = {
   login: {
     initialValues: AllowedMapValuesType[K];
     handleSubmit: (values: any, resetForm: any) => void;
-    initialFieldValues: FieldPropsTypes<K>[];
+    initialFieldValues: any[];
     validationSchema: typeof loginValidationSchema;
     isDisabledFormFirstForm: boolean;
     isDisabled: boolean;

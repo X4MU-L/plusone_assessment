@@ -37,14 +37,6 @@ import {
   InputLabel,
   OutlinedInput,
   IconButton,
-  Box,
-  MenuItem,
-  Select as MuiSelect,
-  Chip,
-  Autocomplete as MuiAutocomplete,
-  Checkbox as MuiCheckbox,
-  FormGroup,
-  FormControlLabel,
 } from "@mui/material";
 
 // import { styled } from "@mui/material/styles";
@@ -130,7 +122,7 @@ export const TextField = ({
   touched,
   handleBlur,
   disabled,
-  helperText,
+
   titleText,
   readOnly,
   startAdornment,
