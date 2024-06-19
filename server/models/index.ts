@@ -12,3 +12,5 @@ export {
   SignInUserType,
   UserTypeWithoutPassword,
 } from "./user";
+
+export { default as Tag, TagType } from "./tags";
