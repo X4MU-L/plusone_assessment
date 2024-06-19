@@ -16,7 +16,10 @@ const PORT = process.env.PORT || 5009;
   await mongoConnect();
 })();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "https://plusone-assessment-a5dxh7gq1-chukwuebukas-projects.vercel.app",
+  "http://localhost:5173",
+];
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
