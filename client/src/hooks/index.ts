@@ -1,9 +1,11 @@
-import axios from "axios";
+import _ from "lodash";
+import axios, { AxiosError, CancelToken, CancelTokenSource } from "axios";
 import {
   requestOptionsWithoutAuth,
   requestOptionsWithAuth,
   url,
   useGetState,
+  requestPostOptionsWithAuth,
 } from "../utils/utils";
 
 import {
@@ -15,7 +17,7 @@ import {
   PostType,
   getPosts,
 } from "../redux";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface UserType {
   firstName: string;
@@ -40,10 +42,16 @@ export interface ApiResponse<T extends keyof AllRequestResponse> {
   status: string;
 }
 
+type ErrorResponseType = {
+  response: {
+    status: number;
+  };
+};
 export interface AllRequestResponse {
   tags: { tags: TagType[] };
   auth: { auth: AuthState };
   posts: { posts: PostType[]; totalPost: number };
+  verify: ErrorResponseType;
 }
 export type AllRequestResponseKeys = keyof AllRequestResponse;
 
@@ -57,20 +65,33 @@ export async function axiosCall<K extends AllRequestResponseKeys>(
   method: MethodTypes,
   url: string,
   re: K,
+  cancelToken: CancelToken | null = null,
   token: string | null = null
 ) {
   let option;
-  try {
-    if (!token) {
-      option = requestOptionsWithoutAuth(url);
-    } else {
-      option = requestOptionsWithAuth(method, url, token);
-    }
-    return (await axios(option)) as ApiResponse<K>;
-  } catch (error) {
-    console.log(error);
-    return null;
+  if (!token) {
+    option = requestOptionsWithoutAuth(url, cancelToken);
+  } else {
+    option = requestOptionsWithAuth(method, url, token, cancelToken);
   }
+  return (await axios(option)) as ApiResponse<K>;
+}
+
+export async function axiosCallWithBody<K extends AllRequestResponseKeys>(
+  method: MethodTypes,
+  url: string,
+  data: unknown,
+  re: K,
+  token: string | null = null,
+  cancelToken: CancelToken | null = null
+) {
+  let option;
+  if (!token) {
+    option = requestPostOptionsWithAuth("POST", url, cancelToken, data);
+  } else {
+    option = requestOptionsWithAuth(method, url, token, cancelToken, data);
+  }
+  return (await axios(option)) as ApiResponse<K>;
 }
 
 export function useBlogPostTags() {
@@ -83,7 +104,7 @@ export function useBlogPostTags() {
 
     const getBlogPostTags = async () => {
       try {
-        const res = await axiosCall("GET", endpoint, "tags", token);
+        const res = await axiosCall("GET", endpoint, "tags", null, token);
         dispatch(getTags(res?.data.tags ?? []));
       } catch (error) {
         console.log(error);
@@ -93,14 +114,14 @@ export function useBlogPostTags() {
   }
 
   useEffect(() => {
-    if (tags.tags.length > 0) return;
     let stale = false;
+    const source = axios.CancelToken.source();
 
     const endpoint = url("/blog-post/tags");
 
     const getBlogPostTags = async () => {
       try {
-        const res = await axiosCall("GET", endpoint, "tags", token);
+        const res = await axiosCall("GET", endpoint, "tags", null, token);
         if (!stale) {
           console.log(res?.data ?? []);
           dispatch(getTags(res?.data.tags ?? []));
@@ -109,9 +130,11 @@ export function useBlogPostTags() {
         console.log(error);
       }
     };
+
     getBlogPostTags();
     return () => {
       stale = true;
+      source.cancel("Request canceled by cleanup");
     };
   }, [dispatch, token, tags.tags]);
 
@@ -132,7 +155,7 @@ export function useFetchBlogPosts() {
     const endpoint = url(`/blog-post?page=${page}&limit=${limit}`);
     const getBlogPosts = async () => {
       try {
-        const res = await axiosCall("GET", endpoint, "posts", token);
+        const res = await axiosCall("GET", endpoint, "posts", null, token);
         dispatch(
           getPosts({
             posts: [...posts.posts.concat(res?.data.posts ?? [])],
@@ -152,13 +175,19 @@ export function useFetchBlogPosts() {
   useEffect(() => {
     let stale = false;
     if (page > 1) return;
-
+    const source = axios.CancelToken.source();
     setLoading(true);
 
     const endpoint = url(`/blog-post?page=${page}&limit=${limit}`);
     const getBlogPosts = async () => {
       try {
-        const res = await axiosCall("GET", endpoint, "posts", token);
+        const res = await axiosCall(
+          "GET",
+          endpoint,
+          "posts",
+          source.token,
+          token
+        );
         if (!stale) {
           dispatch(
             getPosts({
@@ -177,7 +206,110 @@ export function useFetchBlogPosts() {
     getBlogPosts();
     return () => {
       stale = true;
+      source.cancel("Request canceled by cleanup");
     };
   }, [token, dispatch, page]);
   return [loading, isRefetching, page, refetchBlogPost] as const;
 }
+
+type ObjectUpdateType = {
+  type: string;
+  value: string;
+};
+
+export const useHandleverify = (): [
+  boolean,
+  boolean,
+  string,
+  (O: ObjectUpdateType) => void
+] => {
+  const [loading, setLoading] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [error, setError] = useState("");
+  const [value, setValue] = useState<ObjectUpdateType>({ value: "", type: "" });
+
+  function handleUpatetext(obj: ObjectUpdateType) {
+    setValue(obj);
+  }
+
+  const handleVerifyEmail = async function (
+    queryParams: string,
+    type: string,
+    source: CancelTokenSource,
+    stale: boolean
+  ) {
+    setLoading(true);
+    const endpoint = url(`/auth/verify?${type}=${queryParams}`);
+    try {
+      const data = await axiosCall(
+        "GET",
+        endpoint,
+        "verify",
+        source.token,
+        null
+      );
+      if (!stale) {
+        if (data) {
+          setLoading(false);
+          setConfirmed(true);
+          setError("");
+        }
+      }
+    } catch (e) {
+      const err = e as AxiosError<{ message: string }>;
+      if (!stale) {
+        setLoading(false);
+        setConfirmed(false);
+        setError(err.response?.data.message ?? "Error");
+      }
+    }
+  };
+
+  const debouncedFunc = _.debounce(handleVerifyEmail, 300);
+  const checkValueTyped = useCallback(
+    (s: string, k: string, t: CancelTokenSource, b: boolean) =>
+      debouncedFunc(s, k, t, b),
+    []
+  );
+
+  useEffect(() => {
+    if (!value.value) return;
+
+    const source = axios.CancelToken.source();
+    let stale = false;
+    checkValueTyped(value.value, value.type, source, stale);
+    return () => {
+      stale = true;
+      source.cancel("Request canceled by cleanup");
+    };
+  }, [value, checkValueTyped]);
+
+  return [loading, confirmed, error, handleUpatetext];
+};
+
+export const useSignUpuser = (): [boolean, (data: unknown) => void] => {
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (data: unknown) => {
+    setLoading(true);
+    const endpoint = url("/auth/signup");
+    try {
+      const res = await axiosCallWithBody(
+        "POST",
+        endpoint,
+        data,
+        "auth",
+        null,
+        null
+      );
+      console.log(res);
+      setLoading(false);
+      return res;
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  return [loading, handleRegister];
+};

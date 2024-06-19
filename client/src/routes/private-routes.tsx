@@ -1,5 +1,5 @@
 import { Route } from "react-router-dom";
-import { HomePage, Login, Signup } from "../pages";
+import { HomePage, Login } from "../pages";
 import React from "react";
 
 type RouteObjectType = {
@@ -11,7 +11,6 @@ type RouteObjectType = {
 const allPublicRoutes: RouteObjectType[] = [
   { path: "/", element: HomePage, index: false, children: null },
   { path: "/login", element: Login },
-  { path: "/signup", element: Signup },
 ];
 
 const recursiveRoutes = (routes: RouteObjectType[]) => {

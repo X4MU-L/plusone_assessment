@@ -6,6 +6,7 @@ import {
   type AuthState,
   type PostState,
 } from "../redux";
+import { CancelToken } from "axios";
 
 export interface UserType {
   firstName: string;
@@ -47,19 +48,43 @@ export function useGetState<K extends GetStateProps>(
 ): StateTypes[K] {
   return useAppStore().getState()[stateName];
 }
-export const requestOptionsWithoutAuth = (url: string) => ({
+export const requestOptionsWithoutAuth = (
+  url: string,
+  cancelToken: CancelToken | null = null,
+  data: unknown = null
+) => ({
   method: "GET",
   url,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
+  ...(data && { data }),
+  ...(cancelToken && { cancelToken }),
 });
 
+export const requestPostOptionsWithAuth = (
+  method: MethodTypes,
+  url: string,
+
+  cancelToken: CancelToken | null = null,
+  data: unknown = null
+) => ({
+  method: method,
+  url,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+  ...(data && { data }),
+  ...(cancelToken && { cancelToken }),
+});
 export const requestOptionsWithAuth = (
   method: MethodTypes,
   url: string,
-  token: string
+  token: string,
+  cancelToken: CancelToken | null = null,
+  data: unknown = null
 ) => ({
   method: method,
   url,
@@ -68,6 +93,8 @@ export const requestOptionsWithAuth = (
     "Content-Type": "application/json",
     "X-Api-Key": token,
   },
+  ...(data && { data }),
+  ...(cancelToken && { cancelToken }),
 });
 
 export const formatDate = (date: string, format = "D MMM, YYYY hh:mm a") => {

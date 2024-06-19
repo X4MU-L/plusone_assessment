@@ -1,4 +1,4 @@
-export { default as Input } from "./input";
+export { TextField, TextFieldWithIcon } from "./input";
 export { default as Footer } from "./footer";
 export { default as Layout } from "./layout";
 export { CheckBox } from "./reusable";
