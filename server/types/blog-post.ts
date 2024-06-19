@@ -9,7 +9,10 @@ export interface blogPostDeleteSchema {
 
 export interface blogPostSchema {
   content: string;
+  imgUrl?: string;
+  tags?: string[];
   title: string;
+  userId: string;
 }
 
 export interface blogPostUpdateSchema {

@@ -7,6 +7,7 @@ import {
 } from "../../schema";
 import { ValidationError } from "joi";
 import { MongooseError } from "mongoose";
+import { MongoServerError } from "mongodb";
 
 // handle get request for the blog-post route
 async function handleSignInRoute(
@@ -50,7 +51,6 @@ async function handleSignUpUserRoute(
     }
     // create a new user
     const { token, user } = await createNewUser(req.body);
-    console.log(user, "request");
     res.status(201).send({
       token,
       user,
@@ -58,7 +58,6 @@ async function handleSignUpUserRoute(
       message: "user created successfully",
     });
   } catch (error) {
-    console.log(error);
     if (error instanceof ServerError) {
       const serverError = error as ServerError;
       res.status(serverError.statusCode).send({
@@ -67,12 +66,20 @@ async function handleSignUpUserRoute(
         status: "error",
         statusCode: serverError.statusCode,
       });
-    } else if (error instanceof MongooseError) {
-      res.status(400).send({
+    } else if (
+      error?.constructor.name === "MongoServerError" ||
+      error instanceof MongoServerError ||
+      error instanceof MongooseError
+    ) {
+      const err = error as MongoServerError;
+
+      res.status(401).send({
         success: false,
-        message: error.message,
+        message: err.message.includes("duplicate key")
+          ? "username or email already exists"
+          : err.message,
         status: "error",
-        statusCode: 400,
+        statusCode: 401,
       });
     } else {
       res.status(500).send({

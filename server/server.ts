@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5009;
   await mongoConnect();
 })();
 
-const allowedOrigins = ["http://localhost:3001"];
+const allowedOrigins = ["http://localhost:5173"];
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {

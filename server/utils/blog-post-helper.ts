@@ -1,7 +1,9 @@
 import { MongooseError } from "mongoose";
-import { Post, PostArgegateDataType, PostType } from "../models";
+import _ from "lodash";
+import { Post, PostArgegateDataType, PostType, User } from "../models";
 import { blogPostSchema, blogPostUpdateSchema } from "../types";
 import { ServerError } from "./errors";
+import { createTags } from "./tag-helper";
 
 async function getSinglePost(postId: string) {
   try {
@@ -28,10 +30,44 @@ const fetchPaginatedPosts = async (
       {
         $facet: {
           total: [{ $count: "count" }],
-          data: [{ $skip: limit * page - limit }, { $limit: limit }],
+          data: [
+            { $skip: limit * page - limit },
+            { $limit: limit },
+            {
+              $lookup: {
+                from: "users", // The name of the User collection
+                localField: "author", // The field in the Post document to join on
+                foreignField: "_id", // The field in the User document to join on
+                as: "author", // The field to add the joined documents to
+              },
+            },
+            {
+              $unwind: "$author", // Unwind the array of joined documents to a single document
+            },
+            {
+              $lookup: {
+                from: "tags", // The name of the Tags collection
+                localField: "tags", // The field in the Post document to join on
+                foreignField: "_id", // The field in the Tags document to join on
+                as: "tags", // The field to add the joined documents to
+              },
+            },
+            {
+              $project: {
+                title: 1,
+                content: 1,
+                tags: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                "author.firstName": 1,
+                "author.lastName": 1,
+                "author._id": 1,
+                "author.imgUrl": 1,
+              },
+            },
+          ],
         },
       },
-
       {
         $project: {
           total: { $arrayElemAt: ["$total.count", 0] },
@@ -47,10 +83,22 @@ const fetchPaginatedPosts = async (
 };
 
 async function createNewPost(data: blogPostSchema) {
-  const post = new Post(data);
-  console.log(post);
+  let tagIds: string[] = [];
+  if (data.tags) {
+    tagIds = await createTags(data.tags);
+  }
+  try {
+    await User.findOne({ _id: data.userId });
+  } catch (error) {
+    throw new ServerError("no user exists for userId", 404);
+  }
+
+  const post = new Post({
+    ..._.omit(data, ["userId"]),
+    author: data.userId,
+    tags: tagIds,
+  });
   await post.save();
-  console.log("after save", post);
   return post;
 }
 

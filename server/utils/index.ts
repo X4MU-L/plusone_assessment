@@ -13,5 +13,6 @@ export {
   deleteUser,
 } from "./users-helper";
 
+export { createTags, getTags } from "./tag-helper";
 export { ServerError } from "./errors";
 export { verifyPassword, hashPassword, createSignedToken } from "./utils";
