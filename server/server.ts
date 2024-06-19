@@ -17,8 +17,8 @@ const PORT = process.env.PORT || 5009;
 })();
 
 const allowedOrigins = [
-  "https://plusone-assessment-a5dxh7gq1-chukwuebukas-projects.vercel.app",
-  "http://localhost:5173",
+  "https://plusone-assessment-a5dxh7gq1-chukwuebukas-projects.vercel.app", // for production
+  "http://localhost:5173", // for development
 ];
 
 const corsOptions: CorsOptions = {
