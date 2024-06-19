@@ -81,4 +81,27 @@ async function deleteUser(userId: string): Promise<UserTypeWithoutPassword> {
   return _.omit(userObject, ["password"]);
 }
 
-export { signInUser, createNewUser, updateUser, deleteUser };
+async function verifyUserAvailable({
+  email,
+  username,
+}: {
+  email: string;
+  username: string;
+}): Promise<boolean> {
+  const queryInfo = email ? { email } : { username };
+  const user = await User.findOne(queryInfo);
+  if (user) {
+    throw new ServerError(
+      `${username ? "username" : "email"} already in use`,
+      401
+    );
+  }
+  return true;
+}
+export {
+  signInUser,
+  createNewUser,
+  updateUser,
+  deleteUser,
+  verifyUserAvailable,
+};

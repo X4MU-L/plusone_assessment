@@ -12,7 +12,6 @@ const signInUserSchema = Joi.object()
 const signUpUserSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  username: Joi.string().required(),
   email: Joi.string().required(),
   imgUrl: Joi.string(),
   password: Joi.string().required(),

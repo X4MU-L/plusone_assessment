@@ -5,7 +5,6 @@ export interface UserType extends Document {
   lastName: string;
   fullName: string | null;
   email: string;
-  username: string;
   imgUrl: string | null;
   password: string;
   updatedAt: Date;
@@ -23,7 +22,6 @@ export const userSchema = new Schema<UserType>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   fullName: { type: String },
-  username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   imgUrl: { type: String },
   password: { type: String, required: true },

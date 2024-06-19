@@ -44,7 +44,6 @@ export interface signUpUserSchema {
   imgUrl?: string;
   lastName: string;
   password: string;
-  username: string;
 }
 
 export interface verifyEmailAvailableSchema {

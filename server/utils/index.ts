@@ -11,6 +11,7 @@ export {
   createNewUser,
   updateUser,
   deleteUser,
+  verifyUserAvailable,
 } from "./users-helper";
 
 export { createTags, getTags } from "./tag-helper";
