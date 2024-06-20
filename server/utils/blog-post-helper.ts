@@ -56,6 +56,7 @@ const fetchPaginatedPosts = async (
               $project: {
                 title: 1,
                 content: 1,
+                imgUrl: 1,
                 tags: 1,
                 createdAt: 1,
                 updatedAt: 1,
@@ -79,6 +80,7 @@ const fetchPaginatedPosts = async (
     return posts[0];
   } catch (error) {
     console.log(error);
+    throw new ServerError("Internal server error", 500);
   }
 };
 
