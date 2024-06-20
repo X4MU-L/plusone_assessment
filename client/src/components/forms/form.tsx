@@ -166,8 +166,8 @@ export default function Form<K extends keyof FormPropsObjectType<K>>({
             )}
           </Fragment>
         ))}
+        {otherDetails}
       </div>
-      {otherDetails}
     </form>
   );
 }

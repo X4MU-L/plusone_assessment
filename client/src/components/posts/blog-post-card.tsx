@@ -41,8 +41,7 @@ export function BlogPostCard({
           {tags.map((tag) => (
             <Typography
               variant="small"
-              color="blue"
-              className="mb-2 !font-medium "
+              className="px-2 flex items-center !font-medium text-blue-600 capitalize bg-blue-100/40 h-7 rounded-md"
               as="span"
             >
               {tag.name}

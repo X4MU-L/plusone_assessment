@@ -22,6 +22,7 @@ import {
   getTags,
   PostType,
   getPosts,
+  getCurrentUser,
 } from "../redux";
 import { useCallback, useEffect, useState } from "react";
 
@@ -120,6 +121,7 @@ export function useBlogPostTags() {
   }
 
   useEffect(() => {
+    if (tags.tags.length) return;
     let stale = false;
     const source = axios.CancelToken.source();
 
@@ -195,6 +197,7 @@ export function useFetchBlogPosts() {
           token
         );
         if (!stale) {
+          console.log(res);
           dispatch(
             getPosts({
               posts: res?.data.posts ?? [],
@@ -254,6 +257,7 @@ export const useHandleverify = (): [
         source.token,
         null
       );
+      console.log(data);
       if (!stale) {
         if (data) {
           setLoading(false);
@@ -264,6 +268,7 @@ export const useHandleverify = (): [
     } catch (e) {
       const err = e as AxiosError<{ message: string }>;
       if (!stale) {
+        console.log(err);
         setLoading(false);
         setConfirmed(false);
         setError(err.response?.data.message ?? "Error");
@@ -310,6 +315,39 @@ export const useSignUpuser = (): [boolean, (data: unknown) => Promise<any>] => {
         null
       );
       console.log(res);
+      setLoading(false);
+      return res;
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  return [loading, handleRegister];
+};
+
+export const useLoginUser = (): [boolean, (data: unknown) => Promise<any>] => {
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+
+  console.log("loading", loading);
+
+  const handleRegister = async (data: unknown) => {
+    console.log("data", data);
+    setLoading(true);
+    const endpoint = url("/auth/login");
+    try {
+      const res = await axiosCallWithBody(
+        "POST",
+        endpoint,
+        data,
+        "auth",
+        null,
+        null
+      );
+      console.log(res);
+      dispatch(getCurrentUser(res.data.auth));
+
       setLoading(false);
       return res;
     } catch (error) {
